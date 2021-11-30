@@ -1,4 +1,5 @@
 # Bitcoin Cigs - Smokin' Hot Bitcoin Signatures
+Now with added shitcoin message verification!!
 
 ## Installation
 
