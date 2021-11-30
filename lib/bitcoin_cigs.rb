@@ -4,7 +4,7 @@ end
 
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
-    #:groestlcoin => 0x80,
+    :groestlcoin => 0x80,
     #:zcash => 0x80,
     #:syscoin => 0x80,
     :namecoin => 0xB4,
@@ -17,7 +17,7 @@ module BitcoinCigs
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
-    #:groestlcoin => 0x00,
+    :groestlcoin => 0x24,
     #:zcash => 0x41, 		#NOT WORKING - might be {0x1C,0xB8}
     #:syscoin => 0x3F,
     :namecoin => 0x34,
@@ -31,7 +31,7 @@ module BitcoinCigs
   }
   
   PREFIX_MESSAGE_MAGIC = {
-    #:groestlcoin => "\x19GroestlCoin Signed Message:\n",
+    :groestlcoin => "\x1CGroestlCoin Signed Message:\n",
     #:zcash => "\x19Zcash Signed Message:\n",
     #:syscoin => "\x19Syscoin Signed Message:\n",
     :namecoin => "\x19Namecoin Signed Message:\n",
@@ -89,7 +89,7 @@ module BitcoinCigs
 
     def get_signature_address!(signature, message, options = {:network => :mainnet})
 
-      message = calculate_hash(format_message_to_sign(message, options))
+      message = calculate_hash(format_message_to_sign(message, options), options)
 
       curve = CURVE_SECP256K1
       g = GENERATOR_SECP256K1
@@ -147,7 +147,7 @@ module BitcoinCigs
     def sign_message!(wallet_key, message, options = {:network => :mainnet})
       private_key = convert_wallet_format_to_bytes!(wallet_key, options[:network])
       
-      msg_hash = sha256(sha256(format_message_to_sign(message, options)))
+      options[:network] == "groestlcoin" ? msg_hash = sha256(format_message_to_sign(message, options)) : msg_hash = sha256(sha256(format_message_to_sign(message, options)))
       
       ec_key = ::BitcoinCigs::EcKey.new(str_to_num(private_key))
       private_key = ec_key.private_key
@@ -284,8 +284,8 @@ module BitcoinCigs
       s.chars.collect(&:ord).join(', ')
     end
     
-    def calculate_hash(d)
-      sha256(sha256(d))
+    def calculate_hash(d, options = {:network=>:mainnet})
+      options[:network] == "groestlcoin" ? sha256(d) : sha256(sha256(d))
     end
     
     def public_key_to_bc_address(public_key, network_version)
