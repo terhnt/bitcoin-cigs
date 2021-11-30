@@ -4,20 +4,23 @@ end
 
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
+    :litecoin => 0xB0,
     :dogecoin => 0x9E,
     :mainnet => 0x80,
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
+    :litecoin => 0x30,
     :dogecoin => 0x1e,
     :mainnet => 0x00,
     :testnet => 0x6F
   }
   
   PREFIX_MESSAGE_MAGIC = {
+    :litecoin => "'\x19Litecoin Signed Message:\n",
     :dogecoin => "\x19Dogecoin Signed Message:\n",
-	:mainnet => "\x18Bitcoin Signed Message:\n",
-	:testnet => "\x18Bitcoin Signed Message:\n"
+    :mainnet => "\x18Bitcoin Signed Message:\n",
+    :testnet => "\x18Bitcoin Signed Message:\n"
 	
   }
   
