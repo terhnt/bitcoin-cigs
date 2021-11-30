@@ -4,12 +4,26 @@ end
 
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
+    #:groestlcoin => 0x80,
+    #:zcash => 0x80,
+    #:syscoin => 0x80,
+    :namecoin => 0xB4,
+    :digibyte => 0x80,
+    :dash => 0xCC,
+    :unobtanium => 0xE0,
     :litecoin => 0xB0,
     :dogecoin => 0x9E,
     :mainnet => 0x80,
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
+    #:groestlcoin => 0x00,
+    #:zcash => 0x41, 		#NOT WORKING - might be {0x1C,0xB8}
+    #:syscoin => 0x3F,
+    :namecoin => 0x34,
+    :digibyte => 0x1E,
+    :dash => 0x4C,
+    :unobtanium => 0x82,
     :litecoin => 0x30,
     :dogecoin => 0x1e,
     :mainnet => 0x00,
@@ -17,11 +31,17 @@ module BitcoinCigs
   }
   
   PREFIX_MESSAGE_MAGIC = {
+    #:groestlcoin => "\x19GroestlCoin Signed Message:\n",
+    #:zcash => "\x19Zcash Signed Message:\n",
+    #:syscoin => "\x19Syscoin Signed Message:\n",
+    :namecoin => "\x19Namecoin Signed Message:\n",
+    :digibyte => "\x19DigiByte Signed Message:\n",
+    :dash => "\x19DarkCoin Signed Message:\n",
+    :unobtanium => "\x1bUnobtanium Signed Message:\n",
     :litecoin => "\x19Litecoin Signed Message:\n",
     :dogecoin => "\x19Dogecoin Signed Message:\n",
     :mainnet => "\x18Bitcoin Signed Message:\n",
     :testnet => "\x18Bitcoin Signed Message:\n"
-	
   }
   
   P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
