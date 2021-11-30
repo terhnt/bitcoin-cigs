@@ -4,12 +4,21 @@ end
 
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
+    :dogecoin => 0x9E,
     :mainnet => 0x80,
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
+    :dogecoin => 0x1e,
     :mainnet => 0x00,
     :testnet => 0x6F
+  }
+  
+  PREFIX_MESSAGE_MAGIC = {
+    :dogecoin => "\x19Dogecoin Signed Message:\n",
+	:mainnet => "\x18Bitcoin Signed Message:\n",
+	:testnet => "\x18Bitcoin Signed Message:\n"
+	
   }
   
   P = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F
@@ -57,7 +66,7 @@ module BitcoinCigs
 
     def get_signature_address!(signature, message, options = {:network => :mainnet})
 
-      message = calculate_hash(format_message_to_sign(message))
+      message = calculate_hash(format_message_to_sign(message, options))
 
       curve = CURVE_SECP256K1
       g = GENERATOR_SECP256K1
@@ -115,7 +124,7 @@ module BitcoinCigs
     def sign_message!(wallet_key, message, options = {:network => :mainnet})
       private_key = convert_wallet_format_to_bytes!(wallet_key, options[:network])
       
-      msg_hash = sha256(sha256(format_message_to_sign(message)))
+      msg_hash = sha256(sha256(format_message_to_sign(message, options)))
       
       ec_key = ::BitcoinCigs::EcKey.new(str_to_num(private_key))
       private_key = ec_key.private_key
@@ -162,8 +171,8 @@ module BitcoinCigs
     
     private
     
-    def format_message_to_sign(message)
-      "\x18Bitcoin Signed Message:\n#{::BitcoinCigs::CompactInt.new(message.size).encode}#{message}"
+    def format_message_to_sign(message, options = {:network=>:bitcoin})
+	"#{PREFIX_MESSAGE_MAGIC[options[:network]]}#{::BitcoinCigs::CompactInt.new(message.size).encode}#{message}"
     end
     
     def random_k
