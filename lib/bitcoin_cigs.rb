@@ -17,7 +17,7 @@ module BitcoinCigs
   }
   
   PREFIX_MESSAGE_MAGIC = {
-    :litecoin => "'\x19Litecoin Signed Message:\n",
+    :litecoin => "\x19Litecoin Signed Message:\n",
     :dogecoin => "\x19Dogecoin Signed Message:\n",
     :mainnet => "\x18Bitcoin Signed Message:\n",
     :testnet => "\x18Bitcoin Signed Message:\n"
