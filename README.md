@@ -93,6 +93,10 @@ If you find this software useful and wish to donate, you can do so here:
 ```
 1Cyd1wG4hCXK5aRCJQu3KnnhSrrfgs7NeM
 ```
+If you find the edits to this software useful and wish to donate, you can do so here:
+```
+188gkL7ZYcsoGShuv7VTFtZaG5RUcxcwhQ
+```
 
 # Copyright
 
