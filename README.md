@@ -65,6 +65,21 @@ if BitcoinCigs.verify_message(address, signature, message)
 end
 ```
 
+Verify a dogecoin signature:
+```ruby
+require 'rubygems'
+require 'bitcoin-cigs'
+
+address = "DMZyFd2BN5aUh1raM9neXPiBYqzSMLEtcr"
+signature = "IDKhqgCatjxqO2jrfXvWZkb/MoRSguwX64lyVooqtZ6iIep1wD3S4S/+I5ROvI/xZtfRwz5T2+IqW9zGGXOXT70="
+message = "this is a message"
+
+if BitcoinCigs.verify_message(address, signature, message, :network=>:dogecoin)
+  puts "It looks like you own address #{address}!"
+end
+```
+
+
 # Credits
 
 Thanks to jackjack for pointing me to Armory's implementation of message signatures:
