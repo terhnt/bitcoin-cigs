@@ -18,7 +18,7 @@ module BitcoinCigs
   }
   NETWORK_VERSION = {
     :groestlcoin => 0x24,
-    #:zcash => 0x41, 		#NOT WORKING - might be {0x1C,0xB8}
+    #:zcash => 0x1CB8,
     #:syscoin => 0x3F,
     :namecoin => 0x34,
     :digibyte => 0x1E,
@@ -31,8 +31,8 @@ module BitcoinCigs
   }
   
   PREFIX_MESSAGE_MAGIC = {
-    :groestlcoin => "\x1CGroestlCoin Signed Message:\n",
-    #:zcash => "\x19Zcash Signed Message:\n",
+    :groestlcoin => "\x1cGroestlCoin Signed Message:\n",
+    #:zcash => "\x18Zcash Signed Message:\n",
     #:syscoin => "\x19Syscoin Signed Message:\n",
     :namecoin => "\x19Namecoin Signed Message:\n",
     :digibyte => "\x19DigiByte Signed Message:\n",
