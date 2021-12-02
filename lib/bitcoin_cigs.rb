@@ -4,9 +4,9 @@ end
 
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
-    :groestlcoin => 0x80,
-    #:zcash => 0x80,
+	#:zcash => 0x80,
     #:syscoin => 0x80,
+    :groestlcoin => 0x80,
     :namecoin => 0xB4,
     :digibyte => 0x80,
     :dash => 0xCC,
@@ -17,9 +17,9 @@ module BitcoinCigs
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
-    :groestlcoin => 0x24,
-    #:zcash => 0x1CB8,
+    #:zcash => 0x1cb8,
     #:syscoin => 0x3F,
+    :groestlcoin => 0x24,
     :namecoin => 0x34,
     :digibyte => 0x1E,
     :dash => 0x4C,
@@ -31,9 +31,9 @@ module BitcoinCigs
   }
   
   PREFIX_MESSAGE_MAGIC = {
-    :groestlcoin => "\x1cGroestlCoin Signed Message:\n",
-    #:zcash => "\x18Zcash Signed Message:\n",
+  	#:zcash => "\x19Zcash Signed Message:\n",
     #:syscoin => "\x19Syscoin Signed Message:\n",
+    :groestlcoin => "\x1cGroestlCoin Signed Message:\n",
     :namecoin => "\x19Namecoin Signed Message:\n",
     :digibyte => "\x19DigiByte Signed Message:\n",
     :dash => "\x19DarkCoin Signed Message:\n",
@@ -132,8 +132,7 @@ module BitcoinCigs
       
     
       public_key = ::BitcoinCigs::PublicKey.new(g, q, compressed)
-      
-      public_key_to_bc_address(public_key.ser(), NETWORK_VERSION[options[:network]])
+      public_key_to_bc_address(public_key.ser(), options)
     end
     
     def sign_message(wallet_key, message, options = {:network => :mainnet})
@@ -148,11 +147,10 @@ module BitcoinCigs
       private_key = convert_wallet_format_to_bytes!(wallet_key, options[:network])
       
       options[:network] == "groestlcoin" ? msg_hash = sha256(format_message_to_sign(message, options)) : msg_hash = sha256(sha256(format_message_to_sign(message, options)))
-      
       ec_key = ::BitcoinCigs::EcKey.new(str_to_num(private_key))
       private_key = ec_key.private_key
       public_key = ec_key.public_key
-      addr = public_key_to_bc_address(get_pub_key(ec_key, ec_key.public_key.compressed), NETWORK_VERSION[options[:network]])
+      addr = public_key_to_bc_address(get_pub_key(ec_key, ec_key.public_key.compressed), options)
       
       sig = private_key.sign(msg_hash, random_k)
       raise ::BitcoinCigs::Error.new("Unable to sign message") unless public_key.verify(msg_hash, sig)
@@ -288,17 +286,16 @@ module BitcoinCigs
       options[:network] == "groestlcoin" ? sha256(d) : sha256(sha256(d))
     end
     
-    def public_key_to_bc_address(public_key, network_version)
+    def public_key_to_bc_address(public_key, options = {:network=>:mainnet})
       h160 = hash_160(public_key)
-      
-      hash_160_to_bc_address(h160, network_version)
+      hash_160_to_bc_address(h160, options)
     end
     
-    def hash_160_to_bc_address(h160, address_type)
-      vh160 = address_type.chr + h160
-      h = calculate_hash(vh160)
+    def hash_160_to_bc_address(h160, options = {:network=>:mainnet})
+      vh160 = NETWORK_VERSION[options[:network]].chr + h160
+      h = calculate_hash(vh160, options)
       addr = vh160 + h[0...4]
-      
+	    
       encode58(addr)
     end
     
