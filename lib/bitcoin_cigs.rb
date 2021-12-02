@@ -194,7 +194,7 @@ module BitcoinCigs
     
     private
     
-    def format_message_to_sign(message, options = {:network=>:bitcoin})
+    def format_message_to_sign(message, options = {:network=>:mainnet})
 	"#{PREFIX_MESSAGE_MAGIC[options[:network]]}#{::BitcoinCigs::CompactInt.new(message.size).encode}#{message}"
     end
     
