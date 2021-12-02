@@ -1,5 +1,5 @@
 # Bitcoin Cigs - Smokin' Hot Bitcoin Signatures
-Now with added shitcoin message verification!!
+Now with added shitcoin message verification!! (have not put any work into ensuring signing works, just verify_message. )
 ```
 Dogecoin, Digibyte, Litecoin, Namecoin, Unobtanium
 
@@ -82,6 +82,54 @@ message = "this is a message"
 if BitcoinCigs.verify_message(address, signature, message, :network=>:dogecoin)
   puts "It looks like you own address #{address}!"
 end
+```
+# Adding more coins!?
+
+### Want to add your own coin?
+
+The code has been edited to make this pretty simple for any bitcoin clones, For other coins some tweaks maybe needed.
+
+We also want any coins that have a solid user base added to this repo, so if you add coins to this codebase please don't hesitate to start a pull request.
+
+What you need to add a bitcoin clone? PRIVATE_KEY_PREFIX, PUBLIC_KEY_PREFIX, STRMESSAGEMAGIC.
+
+All you need to do is edit the lib\bitcoin_cigs.rb
+
+Step 1. Private_key_prefix:
+```
+
+  PRIVATE_KEY_PREFIX = {
+    :addyourcoinhere => 0x??,
+    :unobtanium => 0xE0,
+    :litecoin => 0xB0,
+    :dogecoin => 0x9E,
+    :mainnet => 0x80,
+    :testnet => 0xEF
+  }
+```
+Step 2. Public_Key_prefix:
+``` 
+
+  NETWORK_VERSION = {
+    :addyourcoinhere => 0x??,
+    :unobtanium => 0x82,
+    :litecoin => 0x30,
+    :dogecoin => 0x1e,
+    :mainnet => 0x00,
+    :testnet => 0x6F
+  }
+```
+Step 3. StrMessageMagic:
+```  
+  PREFIX_MESSAGE_MAGIC = {
+    :addyourcoinhere => "\x18YourCoin Signed Message:\n",
+    :unobtanium => "\x1bUnobtanium Signed Message:\n",
+    :litecoin => "\x19Litecoin Signed Message:\n",
+    :dogecoin => "\x19Dogecoin Signed Message:\n",
+    :mainnet => "\x18Bitcoin Signed Message:\n",
+    :testnet => "\x18Bitcoin Signed Message:\n"
+  }
+  
 ```
 
 
