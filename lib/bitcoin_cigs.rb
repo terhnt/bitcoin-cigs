@@ -227,7 +227,7 @@ module BitcoinCigs
       #puts bytes.bytes.collect {|e| e.to_i}.join(" ")
       hash = bytes[0..32]
       
-      checksum = sha256(sha256(hash))
+      network == "groestlcoin" ? checksum = sha256(hash) : checksum = sha256(sha256(hash))
       raise ::BitcoinCigs::Error.new("Wallet checksum invalid") if bytes[33..37] != checksum[0..3]
 
       version, hash = hash[0], hash[1..-1]
@@ -240,7 +240,7 @@ module BitcoinCigs
       bytes = decode58(input)
       hash = bytes[0...34]
       
-      checksum = sha256(sha256(hash))
+      network == "groestlcoin" ? checksum = sha256(hash) : checksum = sha256(sha256(hash))
       raise ::BitcoinCigs::Error.new("Wallet checksum invalid") if bytes[34..37] != checksum[0..3]
 
       version, hash = hash[0], hash[1..32]
