@@ -5,6 +5,12 @@ end
 module BitcoinCigs
   PRIVATE_KEY_PREFIX = {
     #:zcash => 0x80,
+    :qtum => 0x80,
+    :pivx => 0x3F,
+    :komodo => 0xBC,
+    :viacoin => 0xC7,
+    :vertcoin => 0x80,
+    :monacoin => 0xAC,
     :syscoin => 0x80,
     :groestlcoin => 0x80,
     :namecoin => 0xB4,
@@ -18,6 +24,12 @@ module BitcoinCigs
   }
   NETWORK_VERSION = {
     #:zcash => 0x1cb8,
+    :qtum => 0x58,
+    :pivx => 0x1E,
+    :komodo => 0x3C,
+    :viacoin => 0x47,
+    :vertcoin => 0x47,
+    :monacoin => 0x32,
     :syscoin => 0x3F,
     :groestlcoin => 0x24,
     :namecoin => 0x34,
@@ -32,6 +44,12 @@ module BitcoinCigs
   
   PREFIX_MESSAGE_MAGIC = {
     #:zcash => "\x19Zcash Signed Message:\n",
+    :qtum => "x15Qtum Signed Message:\n",
+    :pivx => "\x18DarkNet Signed Message:\n",
+    :komodo => "\x17Komodo Signed Message:\n",
+    :viacoin => "\x18Viacoin Signed Message:\n",
+    :vertcoin => "\x19Vertcoin Signed Message:\n",
+    :monacoin => "\x19Monacoin Signed Message:\n",
     :syscoin => "\x18Syscoin Signed Message:\n",
     :groestlcoin => "\x1cGroestlCoin Signed Message:\n",
     :namecoin => "\x19Namecoin Signed Message:\n",
