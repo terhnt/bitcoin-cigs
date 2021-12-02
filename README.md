@@ -1,9 +1,9 @@
 # Bitcoin Cigs - Smokin' Hot Bitcoin Signatures
 Now with added shitcoin message verification!! (have not put any work into ensuring signing works, just verify_message. )
 ```
-Dogecoin, Digibyte, Litecoin, Namecoin, Unobtanium
+Dogecoin, Digibyte, Litecoin, Namecoin, Unobtanium, syscoin
 
-WIP: groestlcoin, zcash, syscoin
+WIP: groestlcoin, zcash
 ```
 ## Installation
 
