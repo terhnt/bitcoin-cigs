@@ -74,7 +74,43 @@ module BitcoinCigs
   
   class << self
     include ::BitcoinCigs::CryptoHelper
+	#require 'digest/keccak'
     
+	def verify_address(address, options = {:network => :mainnet})
+      #more checks probably needed, but is some basic validating
+	  puts options[:network]
+      if options[:network].to_s.downcase == "ethereum"
+	    return isAddress(address)
+      else 
+	    decoded_address = decode58(address)
+	    return (str_to_num(decoded_address) >> (8 * 24) == NETWORK_VERSION[options[:network]]) && address.length < 35 && validateInputAddresses(address)
+	  end
+	end
+	
+     def isAddress(address)
+       if (!/^(0x)?[0-9a-f]{40}$/i.match(address))
+         return false
+       end
+       if (/^(0x)?[0-9a-f]{40}$/.match(address) || /^(0x)?[0-9A-F]{40}$/.match(address))
+         return true
+       else
+         isChecksumAddress(address)
+       end
+    end
+
+    def isChecksumAddress(address)
+      #This function currently doesnt work due to issues with sha3/keccak ruby libraries, returns true for now.
+      return true
+      address.sub! '0x', ''
+      addressHash = Digest::Keccak.hexdigest(address.downcase, 256) 
+      for a in 0..39 do
+        if (Integer('0x' + addressHash[a], 16) > 7 && address[a].upcase != address[a]) || (Integer('0x' + addressHash[a], 16) < 7 && address[a].downcase != address[a])
+          return false
+        end
+      end
+       return true
+    end
+	
     def verify_message(address, signature, message, options = {:network => :mainnet})
       begin
         verify_message!(address, signature, message, options)
@@ -83,7 +119,11 @@ module BitcoinCigs
         false
       end
     end
-    
+	
+	def validateInputAddresses(address)
+		return address.match?(/[0-9a-zA-Z]{34}/i)
+	end
+	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
 
       decoded_address = decode58(address)
@@ -162,9 +202,9 @@ module BitcoinCigs
     end
     
     def sign_message!(wallet_key, message, options = {:network => :mainnet})
-      private_key = convert_wallet_format_to_bytes!(wallet_key, options[:network])
+      private_key = convert_wallet_format_to_bytes!(wallet_key, options[:network].to_s)
       
-      options[:network] == "groestlcoin" ? msg_hash = sha256(format_message_to_sign(message, options)) : msg_hash = sha256(sha256(format_message_to_sign(message, options)))
+      options[:network].to_s == "groestlcoin" ? msg_hash = sha256(format_message_to_sign(message, options)) : msg_hash = sha256(sha256(format_message_to_sign(message, options)))
       ec_key = ::BitcoinCigs::EcKey.new(str_to_num(private_key))
       private_key = ec_key.private_key
       public_key = ec_key.public_key
@@ -301,7 +341,7 @@ module BitcoinCigs
     end
     
     def calculate_hash(d, options = {:network=>:mainnet})
-      options[:network] == "groestlcoin" ? sha256(d) : sha256(sha256(d))
+      options[:network].to_s == "groestlcoin" ? sha256(d) : sha256(sha256(d))
     end
     
     def public_key_to_bc_address(public_key, options = {:network=>:mainnet})
