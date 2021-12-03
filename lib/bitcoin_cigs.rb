@@ -74,18 +74,17 @@ module BitcoinCigs
   
   class << self
     include ::BitcoinCigs::CryptoHelper
-	#require 'digest/keccak'
+    #require 'digest/keccak'
     
-	def verify_address(address, options = {:network => :mainnet})
+    def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
-	  puts options[:network]
-      if options[:network].to_s.downcase == "ethereum"
-	    return isAddress(address)
+      if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
+        return isAddress(address) #keccak256(address)
       else 
-	    decoded_address = decode58(address)
-	    return (str_to_num(decoded_address) >> (8 * 24) == NETWORK_VERSION[options[:network]]) && address.length < 35 && validateInputAddresses(address)
-	  end
-	end
+        decoded_address = decode58(address)
+        return (str_to_num(decoded_address) >> (8 * 24) == NETWORK_VERSION[options[:network]]) && address.length < 35 && validateInputAddresses(address)
+      end
+    end
 	
      def isAddress(address)
        if (!/^(0x)?[0-9a-f]{40}$/i.match(address))
@@ -94,22 +93,22 @@ module BitcoinCigs
        if (/^(0x)?[0-9a-f]{40}$/.match(address) || /^(0x)?[0-9A-F]{40}$/.match(address))
          return true
        else
-         isChecksumAddress(address)
+         return true #isChecksumAddress(address)
        end
     end
 
-    def isChecksumAddress(address)
+    #def isChecksumAddress(address)
       #This function currently doesnt work due to issues with sha3/keccak ruby libraries, returns true for now.
-      return true
-      address.sub! '0x', ''
-      addressHash = Digest::Keccak.hexdigest(address.downcase, 256) 
-      for a in 0..39 do
-        if (Integer('0x' + addressHash[a], 16) > 7 && address[a].upcase != address[a]) || (Integer('0x' + addressHash[a], 16) < 7 && address[a].downcase != address[a])
-          return false
-        end
-      end
-       return true
-    end
+      #return true
+      #address.sub! '0x', ''
+      #addressHash = Digest::Keccak.hexdigest(address.downcase, 256) 
+      #for a in 0..39 do
+      #  if (Integer('0x' + addressHash[a], 16) > 7 && address[a].upcase != address[a]) || (Integer('0x' + addressHash[a], 16) < 7 && address[a].downcase != address[a])
+      #    return false
+      #  end
+      #end
+      #return true
+    #end
 	
     def verify_message(address, signature, message, options = {:network => :mainnet})
       begin
@@ -119,10 +118,10 @@ module BitcoinCigs
         false
       end
     end
-	
-	def validateInputAddresses(address)
-		return address.match?(/[0-9a-zA-Z]{34}/i)
-	end
+
+    def validateInputAddresses(address)
+      return address.match?(/[0-9a-zA-Z]{34}/i)
+    end
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
 
@@ -341,7 +340,7 @@ module BitcoinCigs
     end
     
     def calculate_hash(d, options = {:network=>:mainnet})
-      options[:network].to_s == "groestlcoin" ? sha256(d) : sha256(sha256(d))
+      options[:network].to_s == "groestlcoin" ? sha256(d) : sha256(sha256(d)) #replace sha256(d) with: groestl512(groestl512(d))[0..33]
     end
     
     def public_key_to_bc_address(public_key, options = {:network=>:mainnet})
