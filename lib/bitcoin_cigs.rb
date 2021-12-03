@@ -278,8 +278,6 @@ module BitcoinCigs
 
     def decode_wallet_import_format(input, network)
       bytes = decode58(input)#[1..-1]
-      #puts "ASDF #{bytes.unpack('H*')}"
-      #puts bytes.bytes.collect {|e| e.to_i}.join(" ")
       hash = bytes[0..32]
       
       network == "groestlcoin" ? checksum = sha256(hash) : checksum = sha256(sha256(hash))
