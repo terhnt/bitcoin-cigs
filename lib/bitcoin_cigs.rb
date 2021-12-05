@@ -46,7 +46,7 @@ module BitcoinCigs
     :viacoin => "via",
     :vertcoin => "vtc",
     :monacoin => "mona",
-    :syscoin => "sys1",
+    :syscoin => "sys",
     :digibyte => "dgb",
     :litecoin => "ltc",
     :groestlcoin => "grs",
