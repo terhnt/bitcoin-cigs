@@ -103,7 +103,7 @@ module BitcoinCigs
         if addresstype == 1
           hrp, data, spec = Bech32.decode(address)
           hrpmatches = PREFIX_HRP[options[:network]] == hrp
-          return hrpmatches && validateInputAddresses(address) && address.lenghth << 45
+          return hrpmatches && validateInputAddresses(address) && address.length << 45
         end
       end
     end
