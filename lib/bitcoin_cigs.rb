@@ -88,11 +88,12 @@ module BitcoinCigs
     #require 'digest/keccak'
     require './bech32'
     require './segwit_addr'
+    require './keccak256'
     
     def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
       if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
-        return isAddress(address) #keccak256(address)
+        return isChecksumAddress(toChecksumAddress(address))
       else 
         #trial code - for segwit check
         address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
@@ -107,30 +108,48 @@ module BitcoinCigs
       end
     end
 	
-     def isAddress(address)
+     def isAddress(address) #might be obsolete now.
        if (!/^(0x)?[0-9a-f]{40}$/i.match(address))
          return false
-       end
-       if (/^(0x)?[0-9a-f]{40}$/.match(address) || /^(0x)?[0-9A-F]{40}$/.match(address))
+       elsif (/^(0x)?[0-9a-f]{40}$/.match(address) || /^(0x)?[0-9A-F]{40}$/.match(address))
          return true
-       else
-         return true #isChecksumAddress(address)
        end
     end
+ 
+    def isChecksumAddress (address, chainId = nil)
+      stripAddress = stripHexPrefix(address)
+      prefix = chainId != nil ? chainId.to_s + '0x' : ''
+      keccakHash = Digest::Keccak256.new.hexdigest(prefix + stripAddress)
 
-    #def isChecksumAddress(address)
-      #This function currently doesnt work due to issues with sha3/keccak ruby libraries, returns true for now.
-      #return true
-      #address.sub! '0x', ''
-      #addressHash = Digest::Keccak.hexdigest(address.downcase, 256) 
-      #for a in 0..39 do
-      #  if (Integer('0x' + addressHash[a], 16) > 7 && address[a].upcase != address[a]) || (Integer('0x' + addressHash[a], 16) < 7 && address[a].downcase != address[a])
-      #    return false
-      #  end
-      #end
-      #return true
-    #end
+      for i in 0..stripAddress.length-1
+        output = keccakHash[i].to_i >= 8 ? stripAddress[i].upcase : stripAddress[i]
+        if (stripHexPrefix(address)[i].to_s != output.to_s)
+          return false
+        end
+      end
+        return true
+      end
 	
+    def toChecksumAddress (address, chainId = nil)
+      if(!/^(0x)?[0-9a-f]{40}$/i.match(address))
+        raise ::BitcoinCigs::Error.new("not a valid Ethereum address")
+    end
+
+      stripAddress = stripHexPrefix(address).downcase
+      prefix = chainId != nil ? chainId.to_s + '0x' : ''
+      keccakHash = Digest::Keccak256.new.hexdigest(prefix + stripAddress)
+      checksumAddress = '0x'
+      
+      for i in 0..stripAddress.length-1
+        checksumAddress += keccakHash[i].to_i(16) >= 8 ? stripAddress[i].upcase : stripAddress[i]
+      end
+	  return checksumAddress
+    end
+	
+    def stripHexPrefix (address)
+      return address[0..1] == '0x' ? address[2..41] : address
+    end
+
     def verify_message(address, signature, message, options = {:network => :mainnet})
       begin
         verify_message!(address, signature, message, options)
