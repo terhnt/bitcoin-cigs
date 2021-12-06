@@ -41,6 +41,17 @@ module BitcoinCigs
     :mainnet => 0x00,
     :testnet => 0x6F
   }
+	
+  PREFIX_HRP = {
+    :viacoin => "via",
+    :vertcoin => "vtc",
+    :monacoin => "mona",
+    :syscoin => "sys",
+    :digibyte => "dgb",
+    :litecoin => "ltc",
+    :groestlcoin => "grs",
+    :mainnet => "bc"
+  }
   
   PREFIX_MESSAGE_MAGIC = {
     #:zcash => "\x19Zcash Signed Message:\n",
@@ -75,14 +86,24 @@ module BitcoinCigs
   class << self
     include ::BitcoinCigs::CryptoHelper
     #require 'digest/keccak'
+    require './bech32'
+    require './segwit_addr'
     
     def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
       if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
         return isAddress(address) #keccak256(address)
       else 
-        decoded_address = decode58(address)
-        return (str_to_num(decoded_address) >> (8 * 24) == NETWORK_VERSION[options[:network]]) && address.length < 35 && validateInputAddresses(address)
+        #trial code - for segwit check
+        address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
+        if addresstype == 0
+          decoded_address = decode58(address)
+          return (str_to_num(decoded_address) >> (8 * 24) == NETWORK_VERSION[options[:network]]) && address.length < 35 && validateInputAddresses(address)
+        else
+          hrp, data, spec = Bech32.decode(address)
+          hrpmatches = PREFIX_HRP[options[:network]] == hrp
+          return hrpmatches && validateInputAddresses(address) && address.length < 45
+        end
       end
     end
 	
@@ -124,13 +145,21 @@ module BitcoinCigs
     end
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
+      
+      #Segwit implementation (dodgy) - Part 1
+      #check if address length is greater than 30
+      address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
+      
+      if addresstype == 0
+        decoded_address = decode58(address)
+        raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if decoded_address.nil?
+      end
 
-      decoded_address = decode58(address)
-      raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if decoded_address.nil?
       # network_version = str_to_num(decoded_address) >> (8 * 24)
 
-      addr = get_signature_address!(signature, message, options)
-
+      addr = get_signature_address!(signature, message, options, addresstype)
+      
+      #Segwit Implemntation - End of Part 1
       raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if address != addr
       
       nil
@@ -144,7 +173,8 @@ module BitcoinCigs
       end 
     end
 
-    def get_signature_address!(signature, message, options = {:network => :mainnet})
+    # Segwit Implementation (dodgy) - Part 2
+    def get_signature_address!(signature, message, options = {:network => :mainnet}, addresstype = 0)
 
       message = calculate_hash(format_message_to_sign(message, options), options)
 
@@ -189,7 +219,8 @@ module BitcoinCigs
       
     
       public_key = ::BitcoinCigs::PublicKey.new(g, q, compressed)
-      public_key_to_bc_address(public_key.ser(), options)
+      # Segwit Implementation (dodgy) - Part 3
+      addresstype == 0 ? public_key_to_bc_address(public_key.ser(), options) : public_key_to_segwit_address(public_key.ser(), options)
     end
     
     def sign_message(wallet_key, message, options = {:network => :mainnet})
@@ -340,7 +371,17 @@ module BitcoinCigs
     def calculate_hash(d, options = {:network=>:mainnet})
       options[:network].to_s == "groestlcoin" ? sha256(d) : sha256(sha256(d)) #replace sha256(d) with: groestl512(groestl512(d))[0..33]
     end
-    
+
+    # Segwit Implementation (dodgy) - Part 4
+    def public_key_to_segwit_address(public_key, options = {:network => :mainnet})
+      h160 = hash_160(public_key)
+      segwit_addr = SegwitAddr.new
+      segwit_addr.hrp = PREFIX_HRP[options[:network]].to_s
+      vh160 = NETWORK_VERSION[options[:network]].chr + h160
+      segwit_addr.scriptpubkey = "0014" + vh160.unpack("H*").to_s[4..43]
+      segwit_addr.addr
+    end
+
     def public_key_to_bc_address(public_key, options = {:network=>:mainnet})
       h160 = hash_160(public_key)
       hash_160_to_bc_address(h160, options)
