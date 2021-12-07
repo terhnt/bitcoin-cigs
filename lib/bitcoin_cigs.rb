@@ -1,4 +1,4 @@
-%w(error crypto_helper compact_int base_58 curve_fp point public_key private_key signature ec_key).each do |f|
+%w(error crypto_helper compact_int base_58 curve_fp point public_key private_key signature ec_key keccak256).each do |f|
   require File.join(File.dirname(__FILE__), 'bitcoin_cigs', f)
 end
 
@@ -85,10 +85,8 @@ module BitcoinCigs
   
   class << self
     include ::BitcoinCigs::CryptoHelper
-    #require 'digest/keccak'
     require './bech32'
     require './segwit_addr'
-    require './keccak256'
     
     def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
