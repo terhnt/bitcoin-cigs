@@ -181,8 +181,8 @@ module BitcoinCigs
         addr = get_signature_address!(signature, message, options, addresstype)
        
         #Segwit Implemntation - End of Part 1
-        raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if address != addr
       end
+        raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if address != addr
         nil
     end
 
