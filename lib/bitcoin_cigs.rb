@@ -85,7 +85,8 @@ module BitcoinCigs
   
   class << self
     include ::BitcoinCigs::CryptoHelper
-    
+    require 'eth'
+	  
     def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
       if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
@@ -161,23 +162,28 @@ module BitcoinCigs
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
       
-      #Segwit implementation (dodgy) - Part 1
-      #check if address length is greater than 30
-      address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
+      #verify Ethereum?
+      if options[:network].downcase.to_s == "ethereum"
+        address = Eth::Utils.public_key_to_hex(Eth::Key.personal_recover(message, signature))
+      else
+	#All other coins
+        #Segwit implementation (dodgy) - Part 1
+        #check if address length is greater than 30
+        address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
       
-      if addresstype == 0
-        decoded_address = decode58(address)
-        raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if decoded_address.nil?
+        if addresstype == 0
+          decoded_address = decode58(address)
+          raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if decoded_address.nil?
+        end
+
+        # network_version = str_to_num(decoded_address) >> (8 * 24)
+
+        addr = get_signature_address!(signature, message, options, addresstype)
+       
+        #Segwit Implemntation - End of Part 1
+        raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if address != addr
       end
-
-      # network_version = str_to_num(decoded_address) >> (8 * 24)
-
-      addr = get_signature_address!(signature, message, options, addresstype)
-      
-      #Segwit Implemntation - End of Part 1
-      raise ::BitcoinCigs::Error.new("Incorrect address or message for signature.") if address != addr
-      
-      nil
+        nil
     end
 
     def get_signature_address(signature, message, options = {:network => :mainnet})
