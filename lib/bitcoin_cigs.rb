@@ -164,7 +164,7 @@ module BitcoinCigs
       
       #verify Ethereum?
       if options[:network].downcase.to_s == "ethereum"
-        address = Eth::Utils.public_key_to_hex(Eth::Key.personal_recover(message, signature))
+        address = Eth::Utils.public_key_to_address(Eth::Key.personal_recover(message, signature))
       else
 	#All other coins
         #Segwit implementation (dodgy) - Part 1
