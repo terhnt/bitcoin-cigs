@@ -1,4 +1,4 @@
-%w(error crypto_helper compact_int base_58 curve_fp point public_key private_key signature ec_key keccak256 bech32 segwit_addr).each do |f|
+%w(error crypto_helper compact_int base_58 curve_fp point public_key private_key signature ec_key bech32 segwit_addr).each do |f|
   require File.join(File.dirname(__FILE__), 'bitcoin_cigs', f)
 end
 
@@ -90,7 +90,7 @@ module BitcoinCigs
     def verify_address(address, options = {:network => :mainnet})
       #more checks probably needed, but is some basic validating
       if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
-        return isChecksumAddress(toChecksumAddress(address))
+       return Eth::Utils.valid_address? Eth::Utils.format_address address
       else 
         #trial code - for segwit check
         address.length > 34 && address.length < 45 ? addresstype = 1 : addresstype = 0
@@ -103,44 +103,6 @@ module BitcoinCigs
           return hrpmatches && validateInputAddresses(address) && address.length < 45
         end
       end
-    end
-	
-     def isAddress(address) #might be obsolete now.
-       if (!/^(0x)?[0-9a-f]{40}$/i.match(address))
-         return false
-       elsif (/^(0x)?[0-9a-f]{40}$/.match(address) || /^(0x)?[0-9A-F]{40}$/.match(address))
-         return true
-       end
-    end
- 
-    def isChecksumAddress (address, chainId = nil)
-      stripAddress = stripHexPrefix(address)
-      prefix = chainId != nil ? chainId.to_s + '0x' : ''
-      keccakHash = Digest::Keccak256.new.hexdigest(prefix + stripAddress)
-
-      for i in 0..stripAddress.length-1
-        output = keccakHash[i].to_i >= 8 ? stripAddress[i].upcase : stripAddress[i]
-        if (stripHexPrefix(address)[i].to_s != output.to_s)
-          return false
-        end
-      end
-        return true
-      end
-	
-    def toChecksumAddress (address, chainId = nil)
-      if(!/^(0x)?[0-9a-f]{40}$/i.match(address))
-        raise ::BitcoinCigs::Error.new("not a valid Ethereum address")
-    end
-
-      stripAddress = stripHexPrefix(address).downcase
-      prefix = chainId != nil ? chainId.to_s + '0x' : ''
-      keccakHash = Digest::Keccak256.new.hexdigest(prefix + stripAddress)
-      checksumAddress = '0x'
-      
-      for i in 0..stripAddress.length-1
-        checksumAddress += keccakHash[i].to_i(16) >= 8 ? stripAddress[i].upcase : stripAddress[i]
-      end
-	  return checksumAddress
     end
 	
     def stripHexPrefix (address)
