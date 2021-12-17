@@ -4,6 +4,7 @@ end
 
 module BitcoinCigs
   SCRIPT_PREFIX = {
+    :omnilayer => 0x05,
     :blocknet => 0x1C,
     :qtum => 0x00,
     :pivx => 0x00,
@@ -19,12 +20,13 @@ module BitcoinCigs
     :unobtanium => 0x00,
     :litecoin => 0x00,
     :dogecoin => 0x00,
-    :mainnet => 0x00,
+    :mainnet => 0x05,
     :testnet => 0x00
   }
 	
   PRIVATE_KEY_PREFIX = {
     #:zcash => 0x80,
+    :omnilayer => 0x80,
     :blocknet => 0x9A,
     :qtum => 0x80,
     :pivx => 0x3F,
@@ -45,6 +47,7 @@ module BitcoinCigs
   }
   NETWORK_VERSION = {
     #:zcash => 0x1cb8,
+    :omnilayer => 0x00,
     :blocknet => 0x1A,
     :qtum => 0x58,
     :pivx => 0x1E,
@@ -78,6 +81,7 @@ module BitcoinCigs
   
   PREFIX_MESSAGE_MAGIC = {
     #:zcash => "\x19Zcash Signed Message:\n",
+    :omnilayer => "\x18Bitcoin Signed Message:\n",
     :blocknet => "\x18DarkNet Signed Message:\n",
     :qtum => "x15Qtum Signed Message:\n",
     :pivx => "\x18DarkNet Signed Message:\n",
