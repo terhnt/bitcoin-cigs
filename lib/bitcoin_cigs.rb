@@ -3,8 +3,29 @@
 end
 
 module BitcoinCigs
+  SCRIPT_PREFIX = {
+    :blocknet => 0x1C,
+    :qtum => 0x00,
+    :pivx => 0x00,
+    :komodo => 0x00,
+    :viacoin => 0x00,
+    :vertcoin => 0x00,
+    :monacoin => 0x00,
+    :syscoin => 0x00,
+    :groestlcoin => 0x00,
+    :namecoin => 0x00,
+    :digibyte => 0x00,
+    :dash => 0x00,
+    :unobtanium => 0x00,
+    :litecoin => 0x00,
+    :dogecoin => 0x00,
+    :mainnet => 0x00,
+    :testnet => 0x00
+  }
+	
   PRIVATE_KEY_PREFIX = {
     #:zcash => 0x80,
+    :blocknet => 0x9A,
     :qtum => 0x80,
     :pivx => 0x3F,
     :komodo => 0xBC,
@@ -24,6 +45,7 @@ module BitcoinCigs
   }
   NETWORK_VERSION = {
     #:zcash => 0x1cb8,
+    :blocknet => 0x1A,
     :qtum => 0x58,
     :pivx => 0x1E,
     :komodo => 0x3C,
@@ -43,6 +65,7 @@ module BitcoinCigs
   }
 	
   PREFIX_HRP = {
+    :blocknet => "block",
     :viacoin => "via",
     :vertcoin => "vtc",
     :monacoin => "mona",
@@ -55,6 +78,7 @@ module BitcoinCigs
   
   PREFIX_MESSAGE_MAGIC = {
     #:zcash => "\x19Zcash Signed Message:\n",
+    :blocknet => "\x18DarkNet Signed Message:\n",
     :qtum => "x15Qtum Signed Message:\n",
     :pivx => "\x18DarkNet Signed Message:\n",
     :komodo => "\x17Komodo Signed Message:\n",
