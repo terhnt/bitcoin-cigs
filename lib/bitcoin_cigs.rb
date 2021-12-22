@@ -6,22 +6,22 @@ module BitcoinCigs
   SCRIPT_PREFIX = {
     :omnilayer => 0x05,
     :blocknet => 0x1C,
-    :qtum => 0x00,
-    :pivx => 0x00,
-    :komodo => 0x00,
-    :viacoin => 0x00,
-    :vertcoin => 0x00,
-    :monacoin => 0x00,
-    :syscoin => 0x00,
-    :groestlcoin => 0x00,
-    :namecoin => 0x00,
-    :digibyte => 0x00,
-    :dash => 0x00,
-    :unobtanium => 0x00,
-    :litecoin => 0x00,
-    :dogecoin => 0x00,
+    :qtum => 0x32,
+    :pivx => 0x0D,
+    :komodo => 0x55,
+    :viacoin => 0x21,
+    :vertcoin => 0x05,
+    :monacoin => 0x05,
+    :syscoin => 0x05,
+    :groestlcoin => 0x05,
+    :namecoin => 0x0D,
+    :digibyte => 0x3F, #old was 0x05
+    :dash => 0x10,
+    :unobtanium => 0x1E,
+    :litecoin => 0x05,
+    :dogecoin => 0x16,
     :mainnet => 0x05,
-    :testnet => 0x00
+    :testnet => 0xC4
   }
 	
   PRIVATE_KEY_PREFIX = {
