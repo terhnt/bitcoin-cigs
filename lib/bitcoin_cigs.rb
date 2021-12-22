@@ -21,6 +21,7 @@ module BitcoinCigs
     :litecoin => 0x05,
     :dogecoin => 0x16,
     :mainnet => 0x05,
+    :bitcoinsv => 0x05,
     :testnet => 0xC4
   }
 	
@@ -43,6 +44,7 @@ module BitcoinCigs
     :litecoin => 0xB0,
     :dogecoin => 0x9E,
     :mainnet => 0x80,
+    :bitcoinsv => 0x80,
     :testnet => 0xEF
   }
   NETWORK_VERSION = {
@@ -64,6 +66,8 @@ module BitcoinCigs
     :litecoin => 0x30,
     :dogecoin => 0x1e,
     :mainnet => 0x00,
+    :bitcoinsv => 0x00,
+    :bitcoincash => 0x78, # test, is actualy 0x00
     :testnet => 0x6F
   }
 	
@@ -98,6 +102,8 @@ module BitcoinCigs
     :litecoin => "\x19Litecoin Signed Message:\n",
     :dogecoin => "\x19Dogecoin Signed Message:\n",
     :mainnet => "\x18Bitcoin Signed Message:\n",
+    :bitcoinsv => "\x18Bitcoin Signed Message:\n",
+    :bitcoincash => "\x18Bitcoin Signed Message:\n",
     :testnet => "\x18Bitcoin Signed Message:\n"
   }
   
