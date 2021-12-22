@@ -67,7 +67,7 @@ module BitcoinCigs
     :dogecoin => 0x1e,
     :mainnet => 0x00,
     :bitcoinsv => 0x00,
-    :bitcoincash => 0x78, # test, is actualy 0x00
+    :bitcoincash => 0x00,
     :testnet => 0x6F
   }
 	
