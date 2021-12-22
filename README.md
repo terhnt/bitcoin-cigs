@@ -1,8 +1,8 @@
 # Bitcoin Cigs - Smokin' Hot Bitcoin Signatures
 Now with added shitcoin message verification!! (have not put any work into ensuring signing works, just verify_message. )
 ```
-TESTED: Bitcoin (legacy/segwit), Dogecoin, Digibyte, Litecoin (legacy/segwit), Namecoin, Unobtanium, syscoin, Pivx, Komodo, Viacoin, Vertcoin, Monacoin
-UNTESTED: <none>
+TESTED: Bitcoin (legacy/segwit), BitcoinSV (Legacy), Dogecoin, Digibyte, Litecoin (legacy/segwit), Namecoin, Unobtanium, syscoin, Pivx, Komodo, Viacoin, Vertcoin, Monacoin
+UNTESTED: Bitcoin Cash
 WIP: groestlcoin, zcash, qtum
 ```
 Segwit relies on https://github.com/sipa/bech32/tree/master/ref/ruby, currently loads the files from your projects main directory.
@@ -133,6 +133,8 @@ Step 3. StrMessageMagic:
   }
   
 ```
+
+_script prefix has also been added to the code, but currently is not used, if you add a coin please add it any way_
 
 
 # Credits
