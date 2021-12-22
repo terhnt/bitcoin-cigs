@@ -120,8 +120,14 @@ module BitcoinCigs
   class << self
     include ::BitcoinCigs::CryptoHelper
     require 'eth'
+    require 'cashaddress'
 	  
     def verify_address(address, options = {:network => :mainnet})
+      #check if bitcoincash
+      if options[:network].to_s.downcase == 'bitcoincash'
+          address = address[0] == "q" ? Cashaddress.to_legacy('bitcoincash:' + address) : address[0] == "1" ? address : Cashaddress.to_legacy(address)
+      end
+	    
       #more checks probably needed, but is some basic validating
       if ['ethereum', 'qtum', 'solana', 'neo', 'avalanche', 'tron'].include? options[:network].to_s.downcase
        return Eth::Utils.valid_address? Eth::Utils.format_address address
@@ -137,6 +143,7 @@ module BitcoinCigs
           return hrpmatches && validateInputAddresses(address) && address.length < 45
         end
       end
+	    
     end
 	
     def stripHexPrefix (address)
@@ -157,7 +164,11 @@ module BitcoinCigs
     end
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
-      
+      #check if bitcoincash
+      if options[:network].to_s.downcase == 'bitcoincash'
+          address = address[0] == "q" ? Cashaddress.to_legacy('bitcoincash:' + address) : address[0] == "1" ? address : Cashaddress.to_legacy(address)
+      end
+	    
       #verify Ethereum?
       if options[:network].downcase.to_s == "ethereum"
         addr = Eth::Utils.public_key_to_address(Eth::Key.personal_recover(message, signature))
