@@ -124,7 +124,7 @@ module BitcoinCigs
 	  
     def verify_address(address, options = {:network => :mainnet})
       #check if Ethereum clone, behave like ethereum.
-      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'paonetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
+      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'poanetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
           options = {:network => :ethereum}
       end
       #check if bitcoincash
@@ -169,7 +169,7 @@ module BitcoinCigs
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
       #check if Ethereum clone, behave like ethereum.
-      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'paonetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
+      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'poanetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
           options = {:network => :ethereum}
       end
       #check if bitcoincash
