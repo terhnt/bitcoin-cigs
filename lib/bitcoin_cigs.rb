@@ -123,6 +123,10 @@ module BitcoinCigs
     require 'cashaddress'
 	  
     def verify_address(address, options = {:network => :mainnet})
+      #check if Ethereum clone, behave like ethereum.
+      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'paonetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
+          options = {:network => :ethereum}
+      end
       #check if bitcoincash
       if options[:network].to_s.downcase == 'bitcoincash'
           address = address[0] == "q" ? Cashaddress.to_legacy('bitcoincash:' + address) : address[0] == "1" ? address : Cashaddress.to_legacy(address)
@@ -164,6 +168,10 @@ module BitcoinCigs
     end
 	   
     def verify_message!(address, signature, message, options = {:network => :mainnet})
+      #check if Ethereum clone, behave like ethereum.
+      if ['gochain', 'binancesc', 'avalanche', 'polygon', 'xdai', 'fantom', 'tomochain', 'callisto', 'huobi', 'paonetwork', 'ethereumclassic', 'thundertoken', 'arbitrum'].include? options[:network].to_s.downcase
+          options = {:network => :ethereum}
+      end
       #check if bitcoincash
       if options[:network].to_s.downcase == 'bitcoincash'
           address = address[0] == "q" ? Cashaddress.to_legacy('bitcoincash:' + address) : address[0] == "1" ? address : Cashaddress.to_legacy(address)
